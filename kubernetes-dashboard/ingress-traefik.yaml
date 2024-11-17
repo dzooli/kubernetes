@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard-ingress
+  namespace: kubernetes-dashboard
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: "websecure" # Expose via HTTPS
+    traefik.ingress.kubernetes.io/router.tls: "false"              # Enable TLS
+    traefik.ingress.kubernetes.io/service.server.port: "443"      # Dashboard uses HTTPS
+spec:
+  rules:
+  - host: kubernetes-dashboard.local.net                                    # Replace with your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubernetes-dashboard-kong-proxy
+            port:
+              number: 443
+#tls:
+#  - hosts:
+#    - kubernetes-dashboard.local.net                                        # Replace with your domain
+#    secretName: dashboard-tls                                      # TLS secret for HTTPS
+
