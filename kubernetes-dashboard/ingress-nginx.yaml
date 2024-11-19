@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard-ingress
+  namespace: kubernetes-dashboard
+  annotations:
+    cert-manager.io/issuer: "letsencrypt-staging"
+    nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/whitelist-source-range: 127.0.0.1/8,169.254.0.0/16,10.0.0.0/8,172.16.0.0/12,192.168.0.0/24,172.24.1.0/24
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kubernetes-dashboard.local.net
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubernetes-dashboard-kong-proxy
+            port:
+              number: 443
